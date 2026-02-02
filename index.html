@@ -86,18 +86,6 @@
             font-weight: 700;
         }
 
-        /* Inputs */
-        .input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .input-group { grid-template-columns: 1fr; }
-        }
-
         label {
             display: block;
             font-size: 0.9rem;
@@ -312,16 +300,6 @@
         <!-- 2. Configuration Section -->
         <div class="section">
             <h3>2. Configuration</h3>
-            <div class="input-group">
-                <div>
-                    <label>Target Width (px)</label>
-                    <input type="number" id="targetWidth" value="64">
-                </div>
-                <div>
-                    <label>Target Height (px)</label>
-                    <input type="number" id="targetHeight" value="64">
-                </div>
-            </div>
             <div>
                 <label>Color Palette Size (K-Means)</label>
                 <input type="text" id="colorAmount" value="full" placeholder="e.g. 16, 32 or 'full'">
@@ -339,7 +317,7 @@
             <h3>3. Preview</h3>
             <div class="preview-container">
                 <div class="canvas-wrapper">
-                    <p>Original (Resized)</p>
+                    <p>Original</p>
                     <canvas id="canvasSource"></canvas>
                 </div>
                 <div class="canvas-wrapper">
@@ -364,8 +342,6 @@
         const fileInput = document.getElementById('fileInput');
         const fileNameDisplay = document.getElementById('fileNameDisplay');
         const urlInput = document.getElementById('urlInput');
-        const targetWidthInput = document.getElementById('targetWidth');
-        const targetHeightInput = document.getElementById('targetHeight');
         const colorAmountInput = document.getElementById('colorAmount');
         const processBtn = document.getElementById('processBtn');
         const statusSpan = document.getElementById('status');
@@ -393,16 +369,8 @@
         });
 
         processBtn.addEventListener('click', () => {
-            const width = parseInt(targetWidthInput.value);
-            const height = parseInt(targetHeightInput.value);
             const colorVal = colorAmountInput.value.trim().toLowerCase();
             
-            if (!width || !height) {
-                statusSpan.textContent = "⚠️ Please specify valid dimensions.";
-                statusSpan.style.color = "#ef4444";
-                return;
-            }
-
             statusSpan.textContent = "⏳ Loading image...";
             statusSpan.style.color = "var(--text-main)";
 
@@ -410,7 +378,8 @@
             img.crossOrigin = "Anonymous";
 
             img.onload = () => {
-                processImage(img, width, height, colorVal);
+                // Use the image's natural dimensions
+                processImage(img, img.width, img.height, colorVal);
             };
 
             img.onerror = () => {
